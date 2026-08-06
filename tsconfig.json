@@ -2,21 +2,27 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./",
+    "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
+    "module": "NodeNext",
+    "target": "ES2023",
     "types": [],
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true, 
+    "resolveJsonModule": true, 
+    "forceConsistentCasingInFileNames": true,
+    
+    
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
 
     // Other Outputs
-    "sourceMap": true,
+    "sourceMap": true, 
     "declaration": true,
     "declarationMap": true,
 
@@ -36,9 +42,12 @@
     "strict": true,
     "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
-    "isolatedModules": true,
+    "isolatedModules": true, 
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true, 
   }
+  ,
+  "include": ["src"], 
+  "exclude": ["node_modules", "dist"] 
 }
