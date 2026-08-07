@@ -21,12 +21,38 @@ model User {
   name  String
   email String  @unique
   password String
-  phone String?
-  profileImage String?
   role Role @default(USER)
+  phone String?
   isEmailVerified Boolean @default(false)
+  profileImage String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-
 } 
+
+model Category{
+  id Int @id @default(autoincrement())
+  name String @unique
+  description String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product{
+id Int @id @default(autoincrement())
+name String
+description String
+slug String @unique  
+price Decimal @db.Decimal(10,2) 
+isActive Boolean @default(true)
+
+images ProductImages[]
+}
+
+model ProductImages{
+id Int @id @default(autoincrement())
+productId Int
+imageUrl String
+
+product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
