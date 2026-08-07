@@ -12,47 +12,121 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role{
+enum Role {
   USER
   ADMIN
 }
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  name  String
-  email String  @unique
-  password String
-  role Role @default(USER)
-  phone String?
-  isEmailVerified Boolean @default(false)
-  profileImage String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-} 
 
-model Category{
-  id Int @id @default(autoincrement())
-  name String @unique
+model User {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String   @unique
+  password        String
+  role            Role     @default(USER)
+  phone           String?
+  isEmailVerified Boolean  @default(false)
+  profileImage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  Cart Cart[]
+  addresses Address[]
+  orders Order[]
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?
-  isActive Boolean @default(true)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  slug        String  @unique
+  price       Decimal @db.Decimal(10, 2)
+  isActive    Boolean @default(true)
+
+  images    ProductImages[]
+  variants  ProductVariant[]
+  cartItems CartItem[]
+}
+
+model ProductImages {
+  id        Int    @id @default(autoincrement())
+  productId Int
+  imageUrl  String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductVariant {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  size      String?
+  stock     Int     @default(0)
+  color     String?
+  sku       String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  quantity  Int     @default(1)
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@unique([cartId,productId])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Product{
-id Int @id @default(autoincrement())
-name String
-description String
-slug String @unique  
-price Decimal @db.Decimal(10,2) 
-isActive Boolean @default(true)
-
-images ProductImages[]
+model Address{
+  id Int @id @default(autoincrement())
+  userId Int
+  fullName String
+  phone String
+  addressLine String
+  city String
+  state String?
+  postalCode String
+  country String
+  isDefault Boolean @default(false) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders Order[]
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 
-model ProductImages{
-id Int @id @default(autoincrement())
-productId Int
-imageUrl String
-
-product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+enum OrderStatus{
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+model Order{
+  id Int @id @default(autoincrement())
+  userId Int
+  addressId Int?
+  status OrderStatus @default(PENDING)
+  totalAmount Decimal @db.Decimal(10,2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  address Address? @relation(fields: [addressId],references: [id],onDelete: SetNull)
 }
