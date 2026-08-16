@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
-import { registerSchema } from "../auth/auth.validation.js";
-import { registerUser } from "../auth/auth.service.js";
+import { loginSchema, registerSchema } from "../auth/auth.validation.js";
+import { loginUser, registerUser } from "../auth/auth.service.js";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -17,6 +17,25 @@ export const register = async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       message: error instanceof Error ? error.message : "Something went wrong",
+    });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const data = loginSchema.parse(req.body);
+    const result = await loginUser(data);
+    return res.status(200).json({
+      sucess: true,
+      message: "Login Sucessful",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Invalid email or password",
     });
   }
 };

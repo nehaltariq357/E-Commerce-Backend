@@ -14,5 +14,4 @@ app.use(express.json());
 
 app.use("/api/",healthRoute);
 app.use("/api/auth",authRouter)
-
 export default app;
