@@ -1,15 +1,67 @@
-import {createCategory,findCategoryByName} from "./category.repository.js"
-import type{CreateCategoryInput} from "./category.types.js"
+import {
+  createCategory,
+  findCategoryByName,
+  findAllCategories,
+  findCategoryById,
+  updateCategory,
+  deleteCategory,
+} from "./category.repository.js";
+import type {
+  CreateCategoryInput,
+  UpdateCategoryInput,
+} from "./category.types.js";
 
+// create category service
+export const createCategoryService = async (data: CreateCategoryInput) => {
+  const existingCategory = await findCategoryByName(data.name);
 
-export const createCategoryService = async(data:CreateCategoryInput)=>{
+  if (existingCategory) {
+    throw new Error("Category already exists");
+  }
 
-    const existingCategory = await findCategoryByName(data.name)
+  const category = createCategory(data);
+  return category;
+};
 
-    if (existingCategory){
-        throw new Error("Category already exists")
+// find all categories
+
+export const getAllCategoriesServices = async () => {
+  return findAllCategories();
+};
+
+export const getCategoryByIdService = async (id: number) => {
+  const category = await findCategoryById(id);
+  if (!category) {
+    throw new Error("Category not found");
+  }
+  return category;
+};
+
+// patch category
+
+export const updateCategoryService = async (
+  id: number,
+  data: UpdateCategoryInput,
+) => {
+  const existingCategory = await findCategoryById(id);
+  if (!existingCategory) {
+    throw new Error("Category not found");
+  }
+  if (data.name && data.name !== existingCategory.name) {
+    const categoryWithSameName = await findCategoryByName(data.name);
+    if (categoryWithSameName) {
+      throw new Error("Category name already exists ");
     }
+  }
+  return updateCategory(id, data);
+};
 
-    const category = createCategory(data)
-    return category
+export const deleteCategoryService = async(id:number)=>{
+const existing = await findCategoryById(id)
+
+if(!existing){
+    throw new Error("Category not found")
+}
+
+return deleteCategory(id)
 }

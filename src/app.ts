@@ -7,6 +7,7 @@ import healthRoute from './modules/health/health.route.js';
 import { authRouter } from './modules/auth/index.js';
 import { userRouter } from './modules/user/user.index.js';
 import { adminRouter } from './modules/admin/index.js';
+import {categoryRouter} from "./modules/category/index.js"
 const app = express();
 
 app.use(cors());
@@ -24,5 +25,8 @@ app.use("/api/users",userRouter)
 
 // adminRouter
 app.use("/api/admin",adminRouter)
+
+// categories
+app.use("/api/categories",categoryRouter)
 
 export default app;
