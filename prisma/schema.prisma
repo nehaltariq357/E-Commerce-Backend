@@ -57,6 +57,8 @@ model Product {
   productVariants  ProductVariant[]
   cartItems CartItem[]
   orderItems OrderItem[]
+createdAt DateTime @default(now())
+updatedAt DateTime @default(now()) @updatedAt
 }
 
 model ProductImage {

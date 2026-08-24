@@ -8,6 +8,7 @@ import { authRouter } from './modules/auth/index.js';
 import { userRouter } from './modules/user/user.index.js';
 import { adminRouter } from './modules/admin/index.js';
 import {categoryRouter} from "./modules/category/index.js"
+import { productRouter } from './modules/product/index.js';
 const app = express();
 
 app.use(cors());
@@ -29,4 +30,6 @@ app.use("/api/admin",adminRouter)
 // categories
 app.use("/api/categories",categoryRouter)
 
+// product
+app.use("/api/products",productRouter)
 export default app;
