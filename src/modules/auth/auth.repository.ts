@@ -16,3 +16,24 @@ export const createUser = async(data: RegisterInput)=>{
         data  
     })
 }
+
+// find user by id
+
+export const findUserById = async(userId:number)=>{
+    return await prisma.user.findUnique({
+        where:{
+            id:userId
+        },
+        select:{
+            id:true,
+            name:true,
+            email:true,
+            role:true,
+            phone:true,
+            profileImage:true,
+            isEmailVerified:true,
+            addresses:true,
+            createdAt:true,
+        }
+    })
+}

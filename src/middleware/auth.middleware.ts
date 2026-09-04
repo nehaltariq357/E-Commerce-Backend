@@ -1,3 +1,4 @@
+
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
@@ -6,39 +7,36 @@ import type { AuthenticatedUser } from "../modules/auth/auth.types.js";
 export const authenticate = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies?.accessToken;
 
-    if (!authHeader) {
+    if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authencation required",
+        message: "Authentication required",
       });
     }
 
-    const [scheme, token] = authHeader.split(" ");
-
-    if (scheme !== "Bearer" || !token) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid authorization header",
-      });
-    }
-
-    const decoded = jwt.verify(token, env.JWT_SECRET) as AuthenticatedUser;
+    const decoded = jwt.verify(
+      token,
+      env.JWT_SECRET
+    ) as AuthenticatedUser;
 
     req.user = {
-        userId:decoded.userId,
-        role:decoded.role
+      userId: decoded.userId,
+      role: decoded.role,
     };
-    next()
+
+    next();
   } catch (error) {
-    console.error(error)
+    console.error(error);
+
     return res.status(401).json({
-        success:false,
-        message:"Invalid or expired token"
-    })
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
 };
+
