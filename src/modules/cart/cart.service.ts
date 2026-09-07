@@ -99,6 +99,8 @@ export const getCartService = async (userId: number) => {
     
     }
   }
+
+  return cart
 }
 
 

@@ -145,7 +145,7 @@ export const addProductImage = async (req: Request, res: Response) => {
   try {
     const data = addProductImageSchema.parse(req.body);
 
-    const image = addProductImageService(data);
+    const image =await addProductImageService(data);
 
     return res.status(201).json({
       success: true,
@@ -168,7 +168,7 @@ export const addProductImage = async (req: Request, res: Response) => {
 export const addProductVarient = async (req: Request, res: Response) => {
   try {
     const data = addProductVarientSchema.parse(req.body);
-    const varient = addProductVarientService(data);
+    const varient =await addProductVarientService(data);
     return res.status(201).json({
       success: true,
       message: "Product varient added successfully",
@@ -224,7 +224,7 @@ export const updateProductVariant = async (req: Request, res: Response) => {
       });
     }
     const data = updateProductVariantSchema.parse(req.body);
-    const variant = updateProductVariantService(id, data);
+    const variant =await updateProductVariantService(id, data);
     return res.status(200).json({
       success: true,
       message: "product variant updated successfully",

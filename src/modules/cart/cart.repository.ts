@@ -70,8 +70,13 @@ export const findCartWithItemsByUserId = async (
     include: {
       cartItems: {
         include: {
-          product: true,
+          product: {
+            include: {
+              productImages: true,
+            },
+          },
           variant: true,
+
         },
       },
     },
@@ -90,7 +95,11 @@ export const findCartItemByIdAndUserId = async (
       },
     },
     include: {
-      product: true,
+      product: {
+        include: {
+          productImages: true,
+        },
+      },
       variant: true,
     },
   });

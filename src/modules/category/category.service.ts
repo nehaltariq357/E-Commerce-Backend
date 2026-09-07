@@ -29,6 +29,7 @@ export const getAllCategoriesServices = async () => {
   return findAllCategories();
 };
 
+// find category by id
 export const getCategoryByIdService = async (id: number) => {
   const category = await findCategoryById(id);
   if (!category) {

@@ -78,6 +78,7 @@ export const getCategoryById = async (req: Request, res: Response) => {
   }
 };
 
+// update category
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -106,6 +107,7 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
+// delete category
 export const deleteCategory = async(req:Request,res:Response)=>{
 try{
   const id = Number(req.params.id)

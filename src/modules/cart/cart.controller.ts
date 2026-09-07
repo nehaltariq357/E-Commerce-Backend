@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { addToCartService, clearCartService, getCartService, removeCartItemService, updateCartItemService } from "./cart.service.js";
 import { addToCartSchema, updateCartItemSchema } from "./cart.validation.js"
-import ca from "zod/v4/locales/ca.cjs";
+
 
 export const addToCart = async (req: Request, res: Response) => {
     try {

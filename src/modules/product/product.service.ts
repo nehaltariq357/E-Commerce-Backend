@@ -56,6 +56,8 @@ export const getProductByIdService = async (id: number) => {
   if (!product) {
     throw new Error("Product not found");
   }
+
+  return product;
 };
 
 export const updateproductservice = async (
@@ -121,7 +123,7 @@ export const addProductImageService = async (data: AddProductImageInput) => {
 
 export const addProductVarientService = async(data:AddProductVarientInput)=>{
 
-  const product =  await findCategoryById(data.productId)
+  const product =  await findproductbyid(data.productId)
   if(!product){
     throw new Error("product not found")
   }

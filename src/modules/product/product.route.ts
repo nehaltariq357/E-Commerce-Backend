@@ -20,7 +20,7 @@ router.post("/", authenticate, requireRole("ADMIN"), createProduct);
 router.get("/", getallproduct);
 router.get("/:productId/variants", getProductVariant);
 router.get("/:id", findproductbyid);
-router.get("/:id", authenticate, requireRole("ADMIN"), updateproduct);
+router.patch("/:id", authenticate, requireRole("ADMIN"), updateproduct);
 router.delete("/:id", authenticate, requireRole("ADMIN"), deleteproduct);
 router.post("/images", authenticate, requireRole("ADMIN"), addProductImage);
 router.post("/variants", authenticate, requireRole("ADMIN"), addProductVarient);

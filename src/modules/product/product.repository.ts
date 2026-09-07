@@ -40,7 +40,7 @@ export const createProduct = async (data: CreateProductInput) => {
   });
 };
 
-// frind all product
+// find all product
 
 export const findallproduct = async () => {
   return await prisma.product.findMany({
@@ -49,6 +49,9 @@ export const findallproduct = async () => {
     },
     include: {
       category: true,
+      productImages: true,
+      productVariants: true,
+      
     },
     orderBy: {
       createdAt: "desc",
