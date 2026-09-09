@@ -46,7 +46,7 @@ app.use("/api/products",productRouter)
 app.use("/api/cart",cartRouter)
 
 // address
-app.use("/api/address",userRouter)
+app.use("/api/addresses",userRouter)
 
 // order
 
