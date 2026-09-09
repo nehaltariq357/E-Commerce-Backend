@@ -1,0 +1,1 @@
+export {default as AddressRouter } from "./address.route.js"

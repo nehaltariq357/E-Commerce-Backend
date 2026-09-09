@@ -45,6 +45,9 @@ app.use("/api/products",productRouter)
 // cart
 app.use("/api/cart",cartRouter)
 
+// address
+app.use("/api/address",userRouter)
+
 // order
 
 app.use("/api/orders", orderRouter);
