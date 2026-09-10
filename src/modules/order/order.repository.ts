@@ -1,10 +1,8 @@
 import type { OrderStatus } from "../../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma.js";
 
-
-export const findCartByUserId = async (
-  userId: number
-) => {
+// find cart by user id
+export const findCartByUserId = async (userId: number) => {
   return prisma.cart.findUnique({
     where: {
       userId,
@@ -20,9 +18,10 @@ export const findCartByUserId = async (
   });
 };
 
+// find address by order id and user id
 export const findAddressByIdAndUserId = async (
   addressId: number,
-  userId: number
+  userId: number,
 ) => {
   return prisma.address.findFirst({
     where: {
@@ -32,7 +31,7 @@ export const findAddressByIdAndUserId = async (
   });
 };
 
-
+// create order
 export const createOrder = async (data: {
   userId: number;
   addressId: number;
@@ -47,6 +46,7 @@ export const createOrder = async (data: {
   });
 };
 
+// create order items
 export const createOrderItems = async (
   items: {
     orderId: number;
@@ -55,16 +55,21 @@ export const createOrderItems = async (
     productName: string;
     price: number;
     quantity: number;
-  }[]
+    variantSize?: string | null;
+    variantColor?: string | null;
+  }[],
 ) => {
   return prisma.orderItem.createMany({
     data: items,
   });
 };
 
+// create payment
 export const createPayment = async (data: {
   orderId: number;
   amount: number;
+  transactionId?: string | null;
+  stripeSessionId?: string | null;
 }) => {
   return prisma.payment.create({
     data: {
@@ -72,15 +77,18 @@ export const createPayment = async (data: {
       amount: data.amount,
       method: "COD",
       status: "PENDING",
+      ...(data.transactionId !== undefined && {
+        transactionId: data.transactionId,
+      }),
+      ...(data.stripeSessionId !== undefined && {
+        stripeSessionId: data.stripeSessionId,
+      }),
     },
   });
-
-
 };
 
-export const deleteAllCartItems = async (
-  userId: number
-) => {
+// delete all cart items
+export const deleteAllCartItems = async (userId: number) => {
   return prisma.cartItem.deleteMany({
     where: {
       cart: {
@@ -90,10 +98,8 @@ export const deleteAllCartItems = async (
   });
 };
 
-
-export const findOrdersByUserId = async (
-  userId: number
-) => {
+// find orders by user id
+export const findOrdersByUserId = async (userId: number) => {
   return prisma.order.findMany({
     where: {
       userId,
@@ -116,9 +122,10 @@ export const findOrdersByUserId = async (
   });
 };
 
+// find order by order id
 export const findOrderByIdAndUserId = async (
   orderId: number,
-  userId: number
+  userId: number,
 ) => {
   return prisma.order.findFirst({
     where: {
@@ -139,14 +146,73 @@ export const findOrderByIdAndUserId = async (
   });
 };
 
-export const updateOrderStatus = async(orderId:number,status:OrderStatus)=>{
 
-  return prisma.order.update({
+// get all orders for admin
+
+export const findAllOrders = async()=>{
+  return prisma.order.findMany({
+    include:{
+      address:true,
+      orderItems:{
+        include:{
+          product:true,
+          variant:true
+        }
+      },
+      payments:true,
+      user:{
+        select:{
+          id:true,
+          name:true,
+          email:true
+        }
+      }
+    },
+    orderBy:{
+      createdAt:"desc"
+    }
+  });
+}
+
+// get single order for admin
+
+export const findOrderById = async(orderId:number)=>{
+  return prisma.order.findUnique({
     where:{
       id:orderId
     },
-    data:{
-      status:status
+    include:{
+      address:true,
+
+      orderItems:{
+        include:{
+          product:true,
+          variant:true,
+        }
+      },
+      payments:true,
+      user:{
+        select:{
+          id:true,
+          name:true,
+          email:true
+        }
+      }
     }
   })
 }
+
+// update order status
+export const updateOrderStatus = async (
+  orderId: number,
+  status: OrderStatus,
+) => {
+  return prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status: status,
+    },
+  });
+};

@@ -1,12 +1,12 @@
 import { prisma } from "../../lib/prisma.js";
 import type { OrderInput } from "./order.types.js";
-import { findOrdersByUserId, findOrderByIdAndUserId, updateOrderStatus } from "./order.repository.js";
+import { findOrdersByUserId, findOrderByIdAndUserId, updateOrderStatus, findAllOrders, findOrderById } from "./order.repository.js";
 import { OrderStatus } from "../../../generated/prisma/client.js";
 export const createOrderService = async (
     userId: number,
     data: OrderInput
 ) => {
-    // 1. User ka cart find karo
+    // find cart by user id
     const cart = await prisma.cart.findUnique({
         where: {
             userId,
@@ -25,7 +25,7 @@ export const createOrderService = async (
         throw new Error("Cart is empty");
     }
 
-    // 2. User ka address check karo
+    // 2. check user address
     const address = await prisma.address.findFirst({
         where: {
             id: data.addressId,
@@ -37,7 +37,7 @@ export const createOrderService = async (
         throw new Error("Address not found");
     }
 
-    // 3. Products aur stock check karo
+    // check stock
     for (const item of cart.cartItems) {
         if (!item.product.isActive) {
             throw new Error(
@@ -54,7 +54,7 @@ export const createOrderService = async (
         }
     }
 
-    // 4. Total calculate karo
+    // 4. Total calculate
     const totalAmount = cart.cartItems.reduce(
         (total, item) => {
             return total + Number(item.product.price) * item.quantity;
@@ -210,3 +210,70 @@ export const cancelOrderService = async (
     return cancelledOrder;
   });
 };
+
+// for admin
+
+// get all orders
+export const getAllOrdersService = async()=>{
+  return findAllOrders();
+}
+
+// get single order
+export const getOrderByIdService = async(orderId: number)=>{
+  const order =await findOrderById(orderId);
+  if(!order){
+    throw new Error("Order not found");
+  }
+  return order;
+}
+
+// update order status
+export const updateOrderStatusService = async(orderId: number, status: OrderStatus)=>{
+  const order = await findOrderById(orderId);
+  // order not found
+  if(!order){
+    throw new Error("Order not found");
+  }
+
+  //same statue
+  if(order.status === status){
+    throw new Error(`Order is already ${status}`);
+  }
+  // pending to processing/cancelled
+  if(order.status === OrderStatus.PENDING){
+    if(status !== OrderStatus.PROCESSING && status !== OrderStatus.CANCELLED){
+      throw new Error(`Pending order status can only be changed to ${OrderStatus.PROCESSING} or ${OrderStatus.CANCELLED}`);
+
+    }
+  }
+
+  //processing to shipped/cancelled
+  if(order.status === OrderStatus.PROCESSING){
+    if(status !== OrderStatus.SHIPPED && status !== OrderStatus.CANCELLED){
+      throw new Error(`Processing order status can only be changed to ${OrderStatus.SHIPPED} or ${OrderStatus.CANCELLED}`);
+    }
+  }
+
+  // shipped to delivered
+
+  if(order.status === OrderStatus.SHIPPED){
+    if(status !== OrderStatus.DELIVERED){
+      throw new Error(`Shipped order status can only be changed to ${OrderStatus.DELIVERED}`);
+    }
+  }
+
+
+
+  // delivered to nothing
+  if(order.status === OrderStatus.DELIVERED){
+    throw new Error("Delivered order status cannot be changed");
+  }
+
+  // cancelled to nothing
+
+  if(order.status === OrderStatus.CANCELLED){
+    throw new Error("Cancelled order status cannot be changed");
+  }
+
+  return updateOrderStatus(orderId, status);
+}

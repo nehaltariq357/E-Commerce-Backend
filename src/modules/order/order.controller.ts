@@ -1,7 +1,9 @@
 import type { Request, Response } from "express";
-import { orderSchema } from "./order.validation.js";
-import { cancelOrderService, createOrderService,getMyOrderByIdService,getMyOrdersService } from "./order.service.js";
+import { orderSchema,updateOrderStatusSchema } from "./order.validation.js";
+import { cancelOrderService, createOrderService,getMyOrderByIdService,getMyOrdersService,getAllOrdersService,getOrderByIdService,updateOrderStatusService } from "./order.service.js";
+import type { OrderStatus } from "../../../generated/prisma/client.js";
 
+// Create order
 export const createOrder = async (
   req: Request,
   res: Response
@@ -42,7 +44,7 @@ export const createOrder = async (
   }
 };
 
-
+// Get my orders
 export const getMyOrders = async (
   req: Request,
   res: Response
@@ -74,7 +76,7 @@ export const getMyOrders = async (
   }
 };
 
-
+// Get my order by id
 export const getMyOrderById = async (
   req: Request,
   res: Response
@@ -119,7 +121,7 @@ export const getMyOrderById = async (
   }
 };
 
-
+// Cancel order
 export const cancelOrder = async (
   req: Request,
   res: Response
@@ -163,3 +165,76 @@ export const cancelOrder = async (
     });
   }
 };
+
+// admin 
+
+// get/api/admin/orders
+export const getAllOrders = async(req:Request,res:Response)=>{
+try{
+  const orders = await getAllOrdersService();
+  return res.status(200).json({
+    success:true,
+    message:"Orders fetched successfully",
+    data:orders
+  })
+}catch(error){
+  console.error(error)
+  return res.status(500).json({
+    success:false,
+    message:"Failed to fetch orders"
+  })
+}
+}
+
+// get/api/admin/orders/:id
+
+export const getOrderById= async(req:Request,res:Response)=>{
+try{
+  const orderId = Number(req.params.id);
+  if(Number.isNaN(orderId)){
+    return res.status(400).json({
+      success:false,
+      message:"Invalid order ID"
+    })
+  }
+  const order = await getOrderByIdService(orderId);
+  return res.status(200).json({
+    success:true,
+    message:"Order fetched successfully",
+    data:order
+  })
+}catch(error){
+  console.error(error)
+  return res.status(404).json({
+    success:false,
+    message:"Order not found"
+  })
+}
+}
+
+// PATCH /api/admin/orders/:id
+
+export const updateOrderStatus = async(req:Request,res:Response)=>{
+try{
+  const orderId = Number(req.params.id);
+  if(Number.isNaN(orderId)){
+    return res.status(400).json({
+      success:false,
+      message:"Invalid order ID"
+    })
+  }
+  const data = updateOrderStatusSchema.parse(req.body);
+  const order = await updateOrderStatusService(orderId,data.status as OrderStatus);
+  return res.status(200).json({
+    success:true,
+    message:"Order status updated successfully",
+    data:order
+  })
+}catch(error){
+  console.error(error)
+  return res.status(400).json({
+    success:false,
+    message:"Failed to update order status"
+  })
+}
+}
