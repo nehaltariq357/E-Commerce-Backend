@@ -21,16 +21,16 @@ if (!accessTokenSecret || !refreshTokenSecret) {
   throw new Error("JWT secrets are not defined in the environment variables");
 }
 
-// access token
+// generate access token
 
 export const generateAccessToken = (payload: object) => {
   return jwt.sign(payload, accessTokenSecret, {
-    expiresIn: accessTokenExpiresIn as SignOptions["expiresIn"],
+    expiresIn: accessTokenExpiresIn,
     algorithm: "HS256",
   });
 };
 
-// refresh token
+// generate refresh token
 
 export const generateRefreshToken = (payload: object) => {
   return jwt.sign(payload, refreshTokenSecret, {
@@ -39,10 +39,21 @@ export const generateRefreshToken = (payload: object) => {
   });
 };
 
+// verify access token
+export const verifyAccessToken = (token: string)=>{
+  return jwt.verify(
+    token,
+    accessTokenSecret,
+    {
+      algorithms: ["HS256"],
+    }
+  ) as AuthenticatedUser;
+}
+
 // verify refresh token
 
 export const verifyRefreshToken = (token: string) => {
-  return jwt.verify(token, process.env.JWT_REFRESH_SECRET as string, {
+  return jwt.verify(token, refreshTokenSecret as string, {
     algorithms: ["HS256"],
   }) as AuthenticatedUser;
 };

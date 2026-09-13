@@ -29,7 +29,7 @@ export const createAddressService = async (
   if (shouldBeDefault) {
     return prisma.$transaction(async (tx) => {
       // remove default from existing addresses
-      await prisma.address.updateMany({
+      await tx.address.updateMany({
         where: {
           userId,
           isDefault: true,

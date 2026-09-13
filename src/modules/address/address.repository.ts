@@ -32,10 +32,14 @@ export const findAddressByUserId = async (userId: number) => {
     where: {
       userId,
     },
-    orderBy: {
-      isDefault: "desc",
-      createdAt: "desc",
-    },
+    orderBy:[
+      {
+        isDefault:"desc"
+      },
+      {
+        createdAt:"desc"
+      }
+    ]
   });
 };
 

@@ -54,16 +54,6 @@ export const loginUser = async (data: LoginInput) => {
 
 
 
-  // const accessToken = jwt.sign(
-  //     {
-  //         userId:user.id,
-  //         role:user.role
-  //     },
-  //     env.JWT_SECRET,
-  //     {
-  //         expiresIn:env.JWT_EXPIRES_IN
-  //     }
-  // )
 
   return {
     user: {

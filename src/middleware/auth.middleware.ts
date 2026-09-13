@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import type { AuthenticatedUser } from "../modules/auth/auth.types.js";
-
+import {verifyAccessToken} from "../utlis/jwt.js";
 export const authenticate = (
   req: Request,
   res: Response,
@@ -19,10 +19,7 @@ export const authenticate = (
       });
     }
 
-    const decoded = jwt.verify(
-      token,
-      env.JWT_SECRET
-    ) as AuthenticatedUser;
+    const decoded = verifyAccessToken(token);
 
     req.user = {
       userId: decoded.userId,
@@ -31,7 +28,7 @@ export const authenticate = (
 
     next();
   } catch (error) {
-    console.error(error);
+    console.error("Error in auth middleware",error);
 
     return res.status(401).json({
       success: false,

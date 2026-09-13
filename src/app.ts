@@ -11,6 +11,7 @@ import {categoryRouter} from "./modules/category/index.js"
 import { productRouter } from './modules/product/index.js';
 import { cartRouter } from './modules/cart/index.js';
 import { orderRouter } from './modules/order/index.js';
+import { AddressRouter } from './modules/address/index.js';
 
 const app = express();
 
@@ -46,7 +47,7 @@ app.use("/api/products",productRouter)
 app.use("/api/cart",cartRouter)
 
 // address
-app.use("/api/addresses",userRouter)
+app.use("/api/addresses",AddressRouter)
 
 // order
 

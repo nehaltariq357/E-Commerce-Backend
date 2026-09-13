@@ -42,6 +42,10 @@ export const createCartItem = async (cartId:number, productId:number, quantity:n
       productId,
       quantity,
       variantId: variantId || null
+    },
+    include:{
+      product:true,
+      variant:true
     }
   })
 }
@@ -55,6 +59,10 @@ export const updateCartItem = async (cartItemId:number, quantity:number)=>{
     },
     data:{
       quantity
+    },
+    include:{
+      product:true,
+      variant:true
     }
   })
 }

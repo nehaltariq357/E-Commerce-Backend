@@ -13,7 +13,7 @@ export const register = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(4+00).json({
+    return res.status(400).json({
       success: false,
       message: error instanceof Error ? error.message : "Something went wrong",
     });
@@ -30,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
       result.accessToken,
       {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         sameSite: "lax", // to prevent CSRF attacks
         maxAge: 15 * 60 * 1000, // 15 minutes
       }
@@ -40,7 +40,7 @@ export const login = async (req: Request, res: Response) => {
       result.refreshToken,
       {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         sameSite: "lax", // to prevent CSRF attacks,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       }
@@ -87,17 +87,13 @@ export const refresh = async (
         refreshToken
       );
 
-    const isProduction =
-      process.env.NODE_ENV ===
-      "production";
-
     // 4. Set new access token cookie
     res.cookie(
       "accessToken",
       accessToken,
       {
         httpOnly: true,
-        secure: isProduction,
+        secure: false,
         sameSite: "lax",
         maxAge: 15 * 60 * 1000,
       }
@@ -124,16 +120,14 @@ export const refresh = async (
 export const logout = async(req:Request, res:Response)=>{
 try{
 
-  const isProduction = process.env.NODE_ENV === "production";
-
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: isProduction,
+    secure: false,
     sameSite: "lax",
   })
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: isProduction,
+    secure: false,
     sameSite: "lax",
   })
 
