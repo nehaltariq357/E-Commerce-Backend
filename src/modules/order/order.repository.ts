@@ -107,7 +107,7 @@ export const findOrdersByUserId = async (userId: number) => {
     include: {
       address: true,
 
-      ordersItems: {
+      orderItems: {
         include: {
           product: true,
           variant: true,
@@ -127,6 +127,10 @@ export const findOrderByIdAndUserId = async (
   orderId: number,
   userId: number,
 ) => {
+    console.log("ORDER LOOKUP:", {
+    orderId,
+    userId,
+  });
   return prisma.order.findFirst({
     where: {
       id: orderId,
@@ -135,7 +139,7 @@ export const findOrderByIdAndUserId = async (
     include: {
       address: true,
 
-      ordersItems: {
+      orderItems: {
         include: {
           variant: true,
         },

@@ -99,8 +99,8 @@ export const getMyOrderById = async (
     }
 
     const order = await getMyOrderByIdService(
-      req.user.userId,
-      orderId
+      orderId,
+      req.user.userId
     );
 
     return res.status(200).json({

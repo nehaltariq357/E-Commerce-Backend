@@ -12,7 +12,7 @@ export const findAllOrders = async () => {
 
       address: true,
 
-      ordersItems: {
+      orderItems: {
         include: {
           product: true,
           variant: true,
@@ -44,7 +44,7 @@ export const findOrderById = async (
 
       address: true,
 
-      ordersItems: {
+      orderItems: {
         include: {
           product: true,
           variant: true,
@@ -71,6 +71,17 @@ export const updateOrderStatus = async (
     data: {
       status,
     },
+    include:{
+      user:true,
+      address:true,
+      orderItems:{
+        include:{
+          product:true,
+          variant:true
+        }
+      },
+      payments:true
+    }
   });
 };
 
