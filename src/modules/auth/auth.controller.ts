@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 
 import { loginSchema, registerSchema } from "../auth/auth.validation.js";
 import { loginUser, registerUser,refreshAccessToken,getCurrentUser } from "../auth/auth.service.js";
+
+const isProduction = process.env.NODE_ENV === "production";
 export const register = async (req: Request, res: Response) => {
   try {
     const data = registerSchema.parse(req.body);
@@ -30,8 +32,8 @@ export const login = async (req: Request, res: Response) => {
       result.accessToken,
       {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax", // to prevent CSRF attacks
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax", // to prevent CSRF attacks
         maxAge: 15 * 60 * 1000, // 15 minutes
       }
     )
@@ -40,8 +42,8 @@ export const login = async (req: Request, res: Response) => {
       result.refreshToken,
       {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax", // to prevent CSRF attacks,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax", // to prevent CSRF attacks,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       }
     )
@@ -127,8 +129,8 @@ try{
   })
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   })
 
   return res.status(200).json({
