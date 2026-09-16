@@ -15,7 +15,7 @@ import { AddressRouter } from './modules/address/index.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet() as any);
 app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
