@@ -48,6 +48,6 @@
     "skipLibCheck": true, 
   }
   ,
-   "include": ["src", "generated"],
+  "include": ["src", "generated"],
   "exclude": ["node_modules", "dist"]
 }
