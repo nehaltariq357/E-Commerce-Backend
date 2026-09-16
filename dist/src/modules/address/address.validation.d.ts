@@ -8,7 +8,7 @@ export declare const createAddressSchema: zod.ZodObject<{
     postalCode: zod.ZodString;
     country: zod.ZodString;
     isDefault: zod.ZodOptional<zod.ZodBoolean>;
-}, zod.z.core.$strip>;
+}, zod.core.$strip>;
 export declare const updateAddressSchema: zod.ZodObject<{
     fullName: zod.ZodOptional<zod.ZodString>;
     phone: zod.ZodOptional<zod.ZodString>;
@@ -18,5 +18,5 @@ export declare const updateAddressSchema: zod.ZodObject<{
     postalCode: zod.ZodOptional<zod.ZodString>;
     country: zod.ZodOptional<zod.ZodString>;
     isDefault: zod.ZodOptional<zod.ZodOptional<zod.ZodBoolean>>;
-}, zod.z.core.$strip>;
+}, zod.core.$strip>;
 //# sourceMappingURL=address.validation.d.ts.map

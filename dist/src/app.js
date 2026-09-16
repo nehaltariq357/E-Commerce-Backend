@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import helmetModule from "helmet";
+import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from "cookie-parser";
 import healthRoute from './modules/health/health.route.js';
@@ -13,7 +13,7 @@ import { cartRouter } from './modules/cart/index.js';
 import { orderRouter } from './modules/order/index.js';
 import { AddressRouter } from './modules/address/index.js';
 const app = express();
-app.use(helmetModule());
+app.use(helmet());
 app.use(compression());
 app.use(express.json());
 app.use(cookieParser());

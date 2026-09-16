@@ -7,5 +7,5 @@ export declare const updateOrderStatusSchema: z.ZodObject<{
         DELIVERED: "DELIVERED";
         CANCELLED: "CANCELLED";
     }>;
-}, z.z.core.$strip>;
+}, z.core.$strip>;
 //# sourceMappingURL=admin.order.validation.d.ts.map
