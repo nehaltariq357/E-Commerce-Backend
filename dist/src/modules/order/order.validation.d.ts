@@ -1,7 +1,7 @@
 import z from "zod";
 export declare const orderSchema: z.ZodObject<{
     addressId: z.ZodNumber;
-}, z.core.$strip>;
+}, z.z.core.$strip>;
 export declare const updateOrderStatusSchema: z.ZodObject<{
     status: z.ZodEnum<{
         PENDING: "PENDING";
@@ -10,5 +10,5 @@ export declare const updateOrderStatusSchema: z.ZodObject<{
         DELIVERED: "DELIVERED";
         CANCELLED: "CANCELLED";
     }>;
-}, z.core.$strip>;
+}, z.z.core.$strip>;
 //# sourceMappingURL=order.validation.d.ts.map
