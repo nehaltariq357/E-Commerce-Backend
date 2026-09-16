@@ -15,7 +15,9 @@ import { AddressRouter } from './modules/address/index.js';
 
 const app = express();
 
-app.use((helmet as any)());
+const helmetMiddleware = helmet as unknown as (...args: any[]) => express.RequestHandler;
+
+app.use(helmetMiddleware());
 app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
