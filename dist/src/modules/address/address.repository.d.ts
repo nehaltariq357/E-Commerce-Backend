@@ -1,0 +1,74 @@
+import type { CreateAddressInput, UpdateAddressInput } from "./address.types.js";
+export declare const createAddress: (userId: number, data: CreateAddressInput) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const findAddressByUserId: (userId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}[]>;
+export declare const findAddressByIdAndUserId: (addressId: number, userId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+} | null>;
+export declare const updateAddress: (addressId: number, data: UpdateAddressInput) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const deleteAddress: (addressId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const unsetDefaultAddress: (userId: number) => Promise<import("../../../generated/prisma/internal/prismaNamespace.js").BatchPayload>;
+export declare const countAddressByUserId: (userId: number) => Promise<number>;
+//# sourceMappingURL=address.repository.d.ts.map

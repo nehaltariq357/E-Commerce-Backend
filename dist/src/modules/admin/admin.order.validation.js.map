@@ -1,0 +1,1 @@
+{"version":3,"file":"admin.order.validation.js","sourceRoot":"","sources":["../../../../src/modules/admin/admin.order.validation.ts"],"names":[],"mappings":"AACA,OAAO,CAAC,MAAM,KAAK,CAAC;AAEpB,MAAM,CAAC,MAAM,uBAAuB,GAAG,CAAC,CAAC,MAAM,CAAC;IAC5C,MAAM,EAAE,CAAC,CAAC,IAAI,CAAC;QACX,SAAS;QACT,YAAY;QACZ,SAAS;QACT,WAAW;QACX,WAAW;KACd,CAAC;CACL,CAAC,CAAC"}

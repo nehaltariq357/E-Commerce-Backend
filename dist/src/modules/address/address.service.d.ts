@@ -1,0 +1,72 @@
+import type { CreateAddressInput, UpdateAddressInput } from "./address.types.js";
+export declare const createAddressService: (userId: number, data: CreateAddressInput) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const getAddressesService: (userId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}[]>;
+export declare const getAddressByIdService: (addressId: number, userId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const updateAddressService: (userId: number, addressId: number, data: UpdateAddressInput) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+export declare const deleteAddressService: (userId: number, addressId: number) => Promise<{
+    id: number;
+    phone: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    fullName: string;
+    addressLine: string;
+    city: string;
+    state: string | null;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+}>;
+//# sourceMappingURL=address.service.d.ts.map

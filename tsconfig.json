@@ -48,6 +48,5 @@
     "skipLibCheck": true, 
   }
   ,
-  "include": ["src","api","generated"], 
-  "exclude": ["node_modules", "dist"] 
+  "include": ["src","api","generated"],
 }

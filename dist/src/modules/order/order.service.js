@@ -1,0 +1,215 @@
+import { prisma } from "../../lib/prisma.js";
+import { findOrdersByUserId, findOrderByIdAndUserId, updateOrderStatus, findAllOrders, findOrderById } from "./order.repository.js";
+import { OrderStatus } from "../../../generated/prisma/client.js";
+export const createOrderService = async (userId, data) => {
+    // find cart by user id
+    const cart = await prisma.cart.findUnique({
+        where: {
+            userId,
+        },
+        include: {
+            cartItems: {
+                include: {
+                    product: true,
+                    variant: true,
+                },
+            },
+        },
+    });
+    if (!cart || cart.cartItems.length === 0) {
+        throw new Error("Cart is empty");
+    }
+    // 2. check user address
+    const address = await prisma.address.findFirst({
+        where: {
+            id: data.addressId,
+            userId,
+        },
+    });
+    if (!address) {
+        throw new Error("Address not found");
+    }
+    // check stock
+    for (const item of cart.cartItems) {
+        if (!item.product.isActive) {
+            throw new Error(`Product "${item.product.name}" is not active`);
+        }
+        if (item.variant) {
+            if (item.variant.stock < item.quantity) {
+                throw new Error(`Insufficient stock for "${item.product.name}"`);
+            }
+        }
+    }
+    // 4. Total calculate
+    const totalAmount = cart.cartItems.reduce((total, item) => {
+        return total + Number(item.product.price) * item.quantity;
+    }, 0);
+    // 5. Transaction
+    const order = await prisma.$transaction(async (tx) => {
+        // 1. Atomically reduce stock
+        for (const item of cart.cartItems) {
+            if (item.variantId) {
+                const result = await tx.productVariant.updateMany({
+                    where: {
+                        id: item.variantId,
+                        stock: {
+                            gte: item.quantity,
+                        },
+                    },
+                    data: {
+                        stock: {
+                            decrement: item.quantity,
+                        },
+                    },
+                });
+                if (result.count === 0) {
+                    throw new Error(`Insufficient stock for "${item.product.name}"`);
+                }
+            }
+        }
+        // 2. Create Order
+        const newOrder = await tx.order.create({
+            data: {
+                userId,
+                addressId: data.addressId,
+                totalAmount,
+            },
+        });
+        // 3. Create OrderItems
+        await tx.orderItem.createMany({
+            data: cart.cartItems.map((item) => ({
+                orderId: newOrder.id,
+                productId: item.productId,
+                variantId: item.variantId,
+                productName: item.product.name,
+                price: item.product.price,
+                quantity: item.quantity,
+            })),
+        });
+        // 4. Create Payment
+        await tx.payment.create({
+            data: {
+                orderId: newOrder.id,
+                amount: totalAmount,
+                method: "COD",
+                status: "PENDING",
+            },
+        });
+        // 5. Clear Cart
+        await tx.cartItem.deleteMany({
+            where: {
+                cartId: cart.id,
+            },
+        });
+        return newOrder;
+    });
+    return order;
+};
+export const getMyOrdersService = async (userId) => {
+    return await findOrdersByUserId(userId);
+};
+export const getMyOrderByIdService = async (orderId, userId) => {
+    const order = await findOrderByIdAndUserId(orderId, userId);
+    if (!order) {
+        throw new Error("Order not found");
+    }
+    return order;
+};
+export const cancelOrderService = async (userId, orderId) => {
+    const order = await findOrderByIdAndUserId(orderId, userId);
+    if (!order) {
+        throw new Error("Order not found");
+    }
+    if (order.status === OrderStatus.CANCELLED) {
+        throw new Error("Order is already cancelled");
+    }
+    if (order.status === OrderStatus.SHIPPED ||
+        order.status === OrderStatus.DELIVERED) {
+        throw new Error("This order can no longer be cancelled");
+    }
+    return prisma.$transaction(async (tx) => {
+        // Restore stock
+        const orderItems = await tx.orderItem.findMany({
+            where: {
+                orderId: order.id,
+            },
+        });
+        for (const item of orderItems) {
+            if (item.variantId) {
+                await tx.productVariant.update({
+                    where: {
+                        id: item.variantId,
+                    },
+                    data: {
+                        stock: {
+                            increment: item.quantity,
+                        },
+                    },
+                });
+            }
+        }
+        // Cancel order
+        const cancelledOrder = await tx.order.update({
+            where: {
+                id: order.id,
+            },
+            data: {
+                status: OrderStatus.CANCELLED,
+            },
+        });
+        return cancelledOrder;
+    });
+};
+// for admin
+// get all orders
+export const getAllOrdersService = async () => {
+    return findAllOrders();
+};
+// get single order
+export const getOrderByIdService = async (orderId) => {
+    const order = await findOrderById(orderId);
+    if (!order) {
+        throw new Error("Order not found");
+    }
+    return order;
+};
+// update order status
+export const updateOrderStatusService = async (orderId, status) => {
+    const order = await findOrderById(orderId);
+    // order not found
+    if (!order) {
+        throw new Error("Order not found");
+    }
+    //same statue
+    if (order.status === status) {
+        throw new Error(`Order is already ${status}`);
+    }
+    // pending to processing/cancelled
+    if (order.status === OrderStatus.PENDING) {
+        if (status !== OrderStatus.PROCESSING && status !== OrderStatus.CANCELLED) {
+            throw new Error(`Pending order status can only be changed to ${OrderStatus.PROCESSING} or ${OrderStatus.CANCELLED}`);
+        }
+    }
+    //processing to shipped/cancelled
+    if (order.status === OrderStatus.PROCESSING) {
+        if (status !== OrderStatus.SHIPPED && status !== OrderStatus.CANCELLED) {
+            throw new Error(`Processing order status can only be changed to ${OrderStatus.SHIPPED} or ${OrderStatus.CANCELLED}`);
+        }
+    }
+    // shipped to delivered
+    if (order.status === OrderStatus.SHIPPED) {
+        if (status !== OrderStatus.DELIVERED) {
+            throw new Error(`Shipped order status can only be changed to ${OrderStatus.DELIVERED}`);
+        }
+    }
+    // delivered to nothing
+    if (order.status === OrderStatus.DELIVERED) {
+        throw new Error("Delivered order status cannot be changed");
+    }
+    // cancelled to nothing
+    if (order.status === OrderStatus.CANCELLED) {
+        throw new Error("Cancelled order status cannot be changed");
+    }
+    return updateOrderStatus(orderId, status);
+};
+//# sourceMappingURL=order.service.js.map
