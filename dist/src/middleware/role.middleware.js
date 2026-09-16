@@ -1,4 +1,3 @@
-import { Role } from "../../generated/prisma/client.js";
 export const requireRole = (requiredRole) => {
     return (req, res, next) => {
         if (!req.user) {

@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken, } from "../../utlis/jwt.js";
 import { createUser, findUserByEmail, findUserById } from "./auth.repository.js";
 export const registerUser = async (data) => {

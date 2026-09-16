@@ -1,3 +1,2 @@
-import { z } from "zod";
-import { createProductSchema, updateProductSchema, addProductImageSchema, addProductVarientSchema, updateProductVariantSchema, } from "./product.validation.js";
+export {};
 //# sourceMappingURL=product.types.js.map

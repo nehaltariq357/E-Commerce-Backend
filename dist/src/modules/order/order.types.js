@@ -1,3 +1,2 @@
-import { orderSchema } from "./order.validation.js";
-import { z } from "zod";
+export {};
 //# sourceMappingURL=order.types.js.map

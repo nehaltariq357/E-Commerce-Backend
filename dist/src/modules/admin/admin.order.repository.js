@@ -1,5 +1,4 @@
 import { prisma } from "../../lib/prisma.js";
-import { OrderStatus } from "../../../generated/prisma/client.js";
 // ==================================
 // Get All Orders
 // ==================================

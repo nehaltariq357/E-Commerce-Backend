@@ -1,6 +1,5 @@
-import { countAddressByUserId, createAddress, deleteAddress, findAddressByIdAndUserId, findAddressByUserId, unsetDefaultAddress, updateAddress, } from "./address.repository.js";
+import { countAddressByUserId, createAddress, findAddressByIdAndUserId, findAddressByUserId, updateAddress, } from "./address.repository.js";
 import { prisma } from "../../lib/prisma.js";
-import { th } from "zod/v4/locales/index.js";
 // create address
 export const createAddressService = async (userId, data) => {
     const addressCount = await countAddressByUserId(userId);

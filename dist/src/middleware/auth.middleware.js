@@ -1,5 +1,3 @@
-import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
 import { verifyAccessToken } from "../utlis/jwt.js";
 export const authenticate = (req, res, next) => {
     try {
